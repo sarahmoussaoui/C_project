@@ -200,14 +200,3 @@ int main() {
 }
 
 
-/*
-The Sorting Method (n log n): When you insert elements one by one into a max heap, it takes 
-𝑂
-(
-log
-⁡
-𝑛
-)
-O(logn) time per insertion. This method can yield a different heap structure compared to heapify.
-The Heapify Method (O(n)): This method can build a heap in linear time. Depending on the order of elements and how the heapify function is structured, it can lead to different valid heaps.
-*/
