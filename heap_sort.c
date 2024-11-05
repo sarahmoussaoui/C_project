@@ -1,9 +1,9 @@
-#define max 7
+#define max 100
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
-#define MAX_HEAP_SIZE 100  // Maximum size of the heap
+#include <string.h> 
+#define MAX_HEAP_SIZE 200  // Maximum size of the heap
 
 typedef struct {
     int size;                // Current size of the heap
@@ -129,10 +129,21 @@ int main() {
     int T[max];
     MaxHeap heap;
     initMaxHeap(&heap);
+    char input[256]; // so the user can enter multiple elements at once separeted by spaces
 
-    for (int i = 0; i < max; i++) {  // Start loop from 1
-        printf("Give us the element %d of the array:",i+1);
-        scanf("%d",&T[i]);
+
+    int num_elements;  // Number of elements read
+
+    printf("Enter the elements of the heap separated by spaces: ");
+    // Read a line of input
+    fgets(input, sizeof(input), stdin);
+
+    // Parse the input into the array
+    num_elements = 0;
+    char *token = strtok(input, " ");
+    while (token != NULL && num_elements < max) {
+        T[num_elements++] = atoi(token);  // Convert to integer and store in the array
+        token = strtok(NULL, " ");  // Get the next token
     }
 
     printf("*********************\n");

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h> 
 
 #define MAX_HEAP_SIZE 100  // Maximum size of the heap
 
@@ -116,12 +117,24 @@ int main() {
     // we initially have a heap
     int T[max];
     MaxHeap heap;
+    char input[256]; // so the user can enter multiple elements at once separeted by spaces
     initMaxHeap(&heap);
 
-    for (int i = 0; i < max; i++) {  // Start loop from 1
-        printf("Give us the element %d of the heap:",i+1);
-        scanf("%d",&T[i]);
+    int num_elements;  // Number of elements read
+
+    printf("Enter the elements of the heap separated by spaces: ");
+    // Read a line of input
+    fgets(input, sizeof(input), stdin);
+
+    // Parse the input into the array
+    num_elements = 0;
+    char *token = strtok(input, " ");
+    while (token != NULL && num_elements < max) {
+        T[num_elements++] = atoi(token);  // Convert to integer and store in the array
+        token = strtok(NULL, " ");  // Get the next token
     }
+
+
 
     // affecting it to the heap
     heap.size = max;
@@ -129,7 +142,7 @@ int main() {
         heap.data[i] = T[i]; // Assign the elements of T to the heap's data
     }
 
-    printf("This is your heap before any operation:");
+    printf("This is your array before any operation:   ");
     printHeap(&heap);
     int vouloir;
     int answer, number;
@@ -162,14 +175,14 @@ int main() {
           printf("Your element exists at index %d!",index);
         }
         else{
-          printf("Your element doesnt exist!");
+          printf("Your element doesnt exist! \n");
         }
       }
       else{
             printf("Invalid operation. Please choose 1, 2, or 3.\n");
             continue;  // Go back to the start of the loop if input is invalid
       }
-      printf("This is your heap after your operation");
+      printf("This is your heap after your operation:   ");
       printHeap(&heap);
       printf("\nDo you still want to perform an operation ? Tap 1 if yes :");
       scanf("%d",&vouloir);
