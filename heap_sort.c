@@ -1,9 +1,9 @@
-#define max 100
+#define max 15000
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h> 
-#define MAX_HEAP_SIZE 200  // Maximum size of the heap
+#define MAX_HEAP_SIZE 20000  // Maximum size of the heap
 
 typedef struct {
     int size;                // Current size of the heap
@@ -129,25 +129,31 @@ int main() {
     int T[max];
     MaxHeap heap;
     initMaxHeap(&heap);
-    char input[256]; // so the user can enter multiple elements at once separeted by spaces
 
 
     int num_elements;  // Number of elements read
 
-    printf("Enter the elements of the heap separated by spaces: ");
-    // Read a line of input
-    fgets(input, sizeof(input), stdin);
-
     // Parse the input into the array
     num_elements = 0;
-    char *token = strtok(input, " ");
-    while (token != NULL && num_elements < max) {
-        T[num_elements++] = atoi(token);  // Convert to integer and store in the array
-        token = strtok(NULL, " ");  // Get the next token
+    FILE *file = fopen("numbers.txt", "r");
+    if (file == NULL) {
+        perror("Error opening numbers.txt");
+        return 1;
     }
 
-    printf("*********************\n");
-    
+    char input[1000000];  // Large buffer for reading file contents
+    if (fgets(input, sizeof(input), file) != NULL) {  // Read the entire line
+        // Parse the input into the array
+        char *token = strtok(input, " ");
+        while (token != NULL && num_elements < MAX_HEAP_SIZE) {
+            T[num_elements++] = atoi(token);  // Convert to integer and store in the array
+            token = strtok(NULL, " ");  // Get the next token
+        }
+    }
+
+    fclose(file);
+
+    freopen("output.txt", "w", stdout); // to put all my results into a file
     // step1 : inserting all elements --> MIN HEAP
 
     // method nlogn
@@ -156,13 +162,12 @@ int main() {
         insert(&heap, T[i]);
     }
     clock_t end = clock();
-    printf("Max Heap elements before Sorting Method nLog(n): ");
+    printf("Max Heap elements before Sorting Method nLog(n):\n ");
     printHeap(&heap);
     double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
     printf("Execution time for nlog(n) method of construction: %f seconds\n", time_taken);
 
-    printf("*********************\n");
-  
+    printf("*********************\n\n\n\n\n\n\n");  
     
     // method 2 : O(n)
     MaxHeap heap2;
@@ -177,12 +182,12 @@ int main() {
     }
     clock_t end2 = clock();
     
-    printf("Max Heap elements before Sorting Method O(n): ");
+    printf("Max Heap elements before Sorting Method O(n): \n");
     printHeap(&heap2);
     double time_taken2 = ((double)(end2 - start2)) / CLOCKS_PER_SEC;
     printf("Execution time for O(n) method of construction: %f seconds\n", time_taken2);
     
-    printf("*********************\n");
+    printf("*********************\n\n\n\n\n\n\n");
 
     // deleting all elements successively starting from root (MIN)
     // and inserting into the free space of the array to have a final sorted array
@@ -195,7 +200,7 @@ int main() {
       i--;
     }
     heap.size = max;
-    printf("Max Heap elements After Sorting Ascendently the heap constructed nlog(n): ");
+    printf("Max Heap elements After Sorting Ascendently the heap constructed nlog(n):\n ");
     printHeap(&heap);
 
     i = max-1;
@@ -204,9 +209,17 @@ int main() {
       heap2.data[i] = max_element;
       i--;
     }
+
+    printf("*********************\n\n\n\n\n\n\n");
     heap2.size = max;
-    printf("Max Heap elements After Sorting Ascendently the heap constructed O(n): ");
+    printf("Max Heap elements After Sorting Ascendently the heap constructed O(n): \n");
     printHeap(&heap2);
+
+    fclose(stdout);
+
+
+
+
     return 0;
 }
 
