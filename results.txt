@@ -1,3 +1,13 @@
 elements of heap = 15000
 Execution time for nlog(n) method of construction: 0.001000 seconds
 Execution time for O(n) method of construction: 0.000000 seconds
+
+elements of heap = 17000
+Execution time for nlog(n) method of construction: 0.008000 seconds
+Execution time for O(n) method of construction: 0.000000 seconds
+
+
+elements of heap = 19000
+Execution time for nlog(n) method of construction: 0.005000 seconds
+Execution time for O(n) method of construction:  0.001000 seconds
+

@@ -1,4 +1,4 @@
-#define max 15000
+#define max 17000
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -153,8 +153,15 @@ int main() {
 
     fclose(file);
 
-    freopen("output.txt", "w", stdout); // to put all my results into a file
+    setvbuf(stdout, NULL, _IOFBF, 1024 * 1024);  // Set larger buffer size because of huge heaps not printing to output.txt
+
+
+    if (freopen("output.txt", "w", stdout) == NULL) {
+        perror("Error opening output.txt");
+        return 1;
+    } // to put all my results into a file
     // step1 : inserting all elements --> MIN HEAP
+
 
     // method nlogn
     clock_t start = clock();
@@ -168,7 +175,8 @@ int main() {
     printf("Execution time for nlog(n) method of construction: %f seconds\n", time_taken);
 
     printf("*********************\n\n\n\n\n\n\n");  
-    
+
+
     // method 2 : O(n)
     MaxHeap heap2;
     initMaxHeap(&heap2);
@@ -211,6 +219,7 @@ int main() {
     }
 
     printf("*********************\n\n\n\n\n\n\n");
+
     heap2.size = max;
     printf("Max Heap elements After Sorting Ascendently the heap constructed O(n): \n");
     printHeap(&heap2);
