@@ -1,3 +1,25 @@
+A noter que le temps d'execution dépend aussi des nombres generés (différence, grand , petit, répétition des nombres..etc):
+
+elements of heap = 10000
+Execution time for nlog(n) method of construction: 0.000000 seconds
+Execution time for O(n) method of construction: 0.000000 seconds
+
+elements of heap = 11000
+Execution time for nlog(n) method of construction: 0.000000 seconds
+Execution time for O(n) method of construction: 0.000000 seconds
+
+elements of heap = 12000
+Execution time for nlog(n) method of construction: 0.000000 seconds
+Execution time for O(n) method of construction: 0.000000 seconds
+
+elements of heap = 13000
+Execution time for nlog(n) method of construction: 0.000000 seconds
+Execution time for O(n) method of construction: 0.000000 seconds
+
+elements of heap = 14000
+Execution time for nlog(n) method of construction: 0.000000 seconds
+Execution time for O(n) method of construction: 0.000000 seconds
+
 elements of heap = 15000
 Execution time for nlog(n) method of construction: 0.001000 seconds
 Execution time for O(n) method of construction: 0.000000 seconds
@@ -6,8 +28,13 @@ elements of heap = 17000
 Execution time for nlog(n) method of construction: 0.008000 seconds
 Execution time for O(n) method of construction: 0.000000 seconds
 
+elements of heap = 18000
+Execution time for nlog(n) method of construction: 0.001000 seconds
+Execution time for O(n) method of construction: 0.000000 seconds
 
 elements of heap = 19000
 Execution time for nlog(n) method of construction: 0.005000 seconds
 Execution time for O(n) method of construction:  0.001000 seconds
 
+explication : j'ai genere pour des nombres >= 15000 pour avoir une visibilite sur le temps dexecution( different de 0secondes)
+Il est impossible de generer pour 100000 (taille de heapp 10 fois plus grande) a cause du buffer size

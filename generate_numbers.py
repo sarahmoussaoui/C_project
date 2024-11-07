@@ -6,7 +6,7 @@ def generate_random_elements(n, start=1, end=20000):
     return " ".join(random_elements)
 
 # Example usage
-n = 17000  # Number of random elements to generate
+n = 13000  # Number of random elements to generate
 random_elements_with_spaces = generate_random_elements(n)
 
 # Write the random elements to numbers.txt
