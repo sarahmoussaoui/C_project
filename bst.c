@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <time.h>
+#define BILLION 1000000000.0
 
 typedef struct Node {
     int data;
@@ -90,14 +91,21 @@ void afficherParcoursInfixe(Node* racine) {
 int main() {
     Node* racine = NULL;
     int choix, element,nbr;
-    printf("Donnez nomber des elements de l'arbre :");
-    scanf("%d",&nbr);
-    printf("\n");
-    for(int i=1;i<=nbr;i++){
-    	printf("Nomber %d d'arbre :",i);
-    	scanf("%d",&element);
-         racine=ajoute(racine,element);
-	}
+    // printf("Donnez nomber des elements de l'arbre :");
+    // scanf("%d",&nbr);
+    // printf("\n");
+    // for(int i=1;i<=nbr;i++){
+    // 	printf("Nomber %d d'arbre :",i);
+    // 	scanf("%d",&element);
+    //      racine=ajoute(racine,element);
+	// }
+    clock_t start = clock();
+    for(int i=0;i<100000000;i++){
+        racine=ajoute(racine,rand());
+    }
+    clock_t end = clock();
+                double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+     printf("%f nanoSec", time_taken);
      printf("Afficher arbre apres insertion :");
      afficherParcoursInfixe(racine);
     while (1) {
@@ -111,29 +119,41 @@ int main() {
         scanf("%d", &choix);
 
         switch (choix) {
-            case 1:
+             case 1:
                 printf("Entrez l'element a inserer : ");
                 scanf("%d", &element);
+                 start = clock();
                 racine = ajoute(racine, element);
-                printf("ParcoursInfixe :");
-                afficherParcoursInfixe(racine);
+                 end = clock();
+                 time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+                printf("%f Sec", time_taken);
+
                 printf("\n");
                 break;
             case 2:
                 printf("Entrez l'element a rechercher : ");
                 scanf("%d", &element);
+                 start = clock();
                 Node* resultat = rechercher(racine, element);
                 if (resultat != NULL) {
                     printf("Element %d trouve dans l'arbre.\n", element);
                 } else {
                     printf("Element %d non trouve dans l'arbre.\n", element);
                 }
+                 end = clock();
+                 time_taken = (((double)(end - start)) / CLOCKS_PER_SEC)*1e9;
+                printf("%f nSec", time_taken);
                 break;
             case 3:
                 printf("Entrez l'element a supprimer : ");
                 scanf("%d", &element);
+                 start = clock();
                 racine = supprimer(racine, element);
+
                 printf("Element %d supprime .\n", element);
+                 end = clock();
+                 time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+                printf("%f Sec", time_taken);
                 break;
             case 4:
                 printf("ParcoursInfixe : ");
