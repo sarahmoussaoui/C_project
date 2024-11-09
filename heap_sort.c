@@ -1,9 +1,9 @@
-#define max 13000
+#define max 25000
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h> 
-#define MAX_HEAP_SIZE 15000  // Maximum size of the heap
+#define MAX_HEAP_SIZE 26000  // Maximum size of the heap
 
 typedef struct {
     int size;                // Current size of the heap
