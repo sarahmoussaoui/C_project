@@ -1,0 +1,14 @@
+Execution time for your deleting operation took: 0.000000 seconds
+****************************************************************
+Execution time for your inserting operation took: 0.000000 seconds
+****************************************************************
+Execution time for your searching operation took: 0.000000 seconds
+****************************************************************
+Execution time for your deleting operation took: 0.000000 seconds
+****************************************************************
+Execution time for your inserting operation took: 0.000000 seconds
+****************************************************************
+Execution time for your deleting operation took: 0.000000 seconds
+****************************************************************
+Execution time for your searching operation took: 0.000000 seconds
+****************************************************************
