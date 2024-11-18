@@ -3,7 +3,7 @@ import random
 #  this generate a max heap
 def generate_max_heap_to_file(num_elements, file_name):
     # Generate random numbers
-    elements = [random.randint(1, 20000) for _ in range(num_elements)]
+    elements = [random.randint(1, 90000) for _ in range(num_elements)]
     
     # Convert the list to a max heap
     # Negate values to use Python's min-heap as max-heap
@@ -18,6 +18,6 @@ def generate_max_heap_to_file(num_elements, file_name):
         file.write(" ".join(map(str, max_heap)))
 
 # Specify the number of elements
-num_elements = 19000
+num_elements = 90000
 generate_max_heap_to_file(num_elements, "heap_elements.txt")
 
