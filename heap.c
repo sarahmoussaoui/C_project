@@ -1,19 +1,31 @@
-#define max 50000
+#define max 10000
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h> 
 
-#define MAX_HEAP_SIZE 55000  // Maximum size of the heap
+#define MAX_HEAP_SIZE 15000  // Maximum size of the heap
 
 typedef struct {
     int size;                // Current size of the heap
-    int data[MAX_HEAP_SIZE]; // Array to store heap elements
+    int *data; // dynamic Array to store heap elements
 } MaxHeap;
 
 // Function to initialize a max heap
 void initMaxHeap(MaxHeap *heap) {
     heap->size = 0; // Initialize size to 0
+    heap->data = (int *)malloc(MAX_HEAP_SIZE * sizeof(int));  // Allocate memory dynamically for the data array
+    if (heap->data == NULL) {              // Check for memory allocation failure
+        printf("Memory allocation failed\n");
+        exit(1);                           // Exit if memory allocation fails
+    }
+}
+
+
+// Function to free the heap memory
+void freeMaxHeap(MaxHeap *heap) {
+    free(heap->data);  // Free the dynamically allocated memory
+    heap->data = NULL; // Set the pointer to NULL after freeing memory
 }
 
 // Function to get the parent index
@@ -115,7 +127,13 @@ void printHeap(MaxHeap *heap) {
 
 int main() {
     // we initially have a heap
-    int T[max];
+    int *T;
+    T = (int *)malloc(sizeof(int) * max);  // Allocate memory for `max` integers
+    if (T == NULL) {
+    printf("Memory allocation failed\n");
+    return 1;  // Or handle the error as needed
+    }
+
     MaxHeap heap;
     initMaxHeap(&heap);
     char choice[20]; // for output purposes to calculate execution time
@@ -208,7 +226,7 @@ int main() {
           printf("Error opening file!\n");
           return 1;
       }
-      fprintf(file, "Execution time for your %s operation took: %f seconds\n", choice, time_taken);
+      fprintf(file, "For %d elements in the heap the execution time for your %s operation took: %f seconds\n",max, choice, time_taken);
       fprintf(file,"****************************************************************\n");
       fclose(file);
 
@@ -217,5 +235,7 @@ int main() {
       scanf("%d",&vouloir);
 
     }
+
+    freeMaxHeap(&heap);
     return 0;
 }

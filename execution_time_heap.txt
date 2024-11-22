@@ -1,22 +1,43 @@
-Execution time for your deleting operation took: 0.000000 seconds
+For 10000000 elements in the heap the execution time for your inserting operation took: 0.000000 seconds
 ****************************************************************
-Execution time for your inserting operation took: 0.000000 seconds
+For 10000000 elements in the heap the execution time for your deleting operation took: 0.032000 seconds
 ****************************************************************
-Execution time for your searching operation took: 0.000000 seconds
+For 10000000 elements in the heap the execution time for your searching operation took: 0.031000 seconds
 ****************************************************************
-Execution time for your deleting operation took: 0.000000 seconds
+For 1000000 elements in the heap the execution time for your inserting operation took: 0.000000 seconds
 ****************************************************************
-Execution time for your inserting operation took: 0.000000 seconds
+For 1000000 elements in the heap the execution time for your deleting operation took: 0.024000 seconds
 ****************************************************************
-Execution time for your deleting operation took: 0.000000 seconds
+For 1000000 elements in the heap the execution time for your searching operation took: 0.009000 seconds
 ****************************************************************
-Execution time for your searching operation took: 0.000000 seconds
+For 100000 elements in the heap the execution time for your inserting operation took: 0.000000 seconds
 ****************************************************************
-Execution time for your inserting operation took: 0.000000 seconds
+For 100000 elements in the heap the execution time for your deleting operation took: 0.001000 seconds
 ****************************************************************
-Execution time for your inserting operation took: 0.000000 seconds
+For 100000 elements in the heap the execution time for your searching operation took: 0.000000 seconds
 ****************************************************************
-Execution time for your deleting operation took: 0.000000 seconds
+For 10000 elements in the heap the execution time for your inserting operation took: 0.000000 seconds
 ****************************************************************
-Execution time for your searching operation took: 0.000000 seconds
+For 10000 elements in the heap the execution time for your deleting operation took: 0.000000 seconds
 ****************************************************************
+For 10000 elements in the heap the execution time for your searching operation took: 0.000000 seconds
+****************************************************************
+For 10000 elements in the heap the execution time for your inserting operation took: 0.000000 seconds
+****************************************************************
+For 10000 elements in the heap the execution time for your deleting operation took: 0.000000 seconds
+****************************************************************
+For 10000 elements in the heap the execution time for your searching operation took: 0.000000 seconds
+****************************************************************
+For 1000 elements in the heap the execution time for your inserting operation took: 0.000000 seconds
+****************************************************************
+For 1000 elements in the heap the execution time for your deleting operation took: 0.000000 seconds
+****************************************************************
+For 1000 elements in the heap the execution time for your searching operation took: 0.000000 seconds
+****************************************************************
+For 100 elements in the heap the execution time for your inserting operation took: 0.000000 seconds
+****************************************************************
+For 100 elements in the heap the execution time for your deleting operation took: 0.000000 seconds
+****************************************************************
+For 100 elements in the heap the execution time for your searching operation took: 0.000000 seconds
+****************************************************************
+
