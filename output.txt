@@ -1,21 +1,20 @@
+Execution time for nlog(n) method of construction of 100 elements in heap: 0.000000 seconds
+Execution time for O(n) method of construction of 100 elements in heap: 0.000000 seconds
+*********************
 Execution time for nlog(n) method of construction of 1000 elements in heap: 0.000000 seconds
 Execution time for O(n) method of construction of 1000 elements in heap: 0.000000 seconds
 *********************
-
 Execution time for nlog(n) method of construction of 10000 elements in heap: 0.000000 seconds
 Execution time for O(n) method of construction of 10000 elements in heap: 0.000000 seconds
 *********************
-
-Execution time for nlog(n) method of construction of 100000 elements in heap: 0.000000 seconds
-Execution time for O(n) method of construction of 100000 elements in heap: 0.000000 seconds
+Execution time for nlog(n) method of construction of 100000 elements in heap: 0.009000 seconds
+Execution time for O(n) method of construction of 100000 elements in heap: 0.006000 seconds
 *********************
-
-Execution time for nlog(n) method of construction of 1000000 elements in heap: 0.028000 seconds
-Execution time for O(n) method of construction of 1000000 elements in heap: 0.012000 seconds
+Execution time for nlog(n) method of construction of 1000000 elements in heap: 0.025000 seconds
+Execution time for O(n) method of construction of 1000000 elements in heap: 0.006000 seconds
 *********************
-
-Execution time for nlog(n) method of construction of 10000000 elements in heap: 0.201000 seconds
-Execution time for O(n) method of construction of 10000000 elements in heap: 0.132000 seconds
+Execution time for nlog(n) method of construction of 10000000 elements in heap: 0.175000 seconds
+Execution time for O(n) method of construction of 10000000 elements in heap: 0.091000 seconds
 *********************
-Execution time for nlog(n) method of construction of 100000000 elements in heap: 1.742000 seconds
-Execution time for O(n) method of construction of 100000000 elements in heap: 1.383000 seconds
+Execution time for nlog(n) method of construction of 100000000 elements in heap: 1.809000 seconds
+Execution time for O(n) method of construction of 100000000 elements in heap: 0.794000 seconds

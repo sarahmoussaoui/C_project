@@ -202,7 +202,7 @@ int main() {
         heap2.data[i] = T[i]; // Assign the elements of T to the heap's data
     }
     clock_t start2 = clock();
-    for (int i = max- 1; i >= 0; i--) {
+    for (int i = (max/2)- 1; i >= 0; i--) {
         heapify(&heap2, max,i);
     }
     clock_t end2 = clock();
