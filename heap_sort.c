@@ -1,18 +1,29 @@
-#define max 25000
+#define max 100000000
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h> 
-#define MAX_HEAP_SIZE 26000  // Maximum size of the heap
+#define MAX_HEAP_SIZE 150000000  // Maximum size of the heap
 
 typedef struct {
     int size;                // Current size of the heap
-    int data[MAX_HEAP_SIZE]; // Array to store heap elements
+    int *data; // dynamic Array to store heap elements
 } MaxHeap;
 
 // Function to initialize a max heap
 void initMaxHeap(MaxHeap *heap) {
     heap->size = 0; // Initialize size to 0
+    heap->data = (int *)malloc(MAX_HEAP_SIZE * sizeof(int));  // Allocate memory dynamically for the data array
+    if (heap->data == NULL) {              // Check for memory allocation failure
+        printf("Memory allocation failed\n");
+        exit(1);                           // Exit if memory allocation fails
+    }
+}
+
+// Function to free the heap memory
+void freeMaxHeap(MaxHeap *heap) {
+    free(heap->data);  // Free the dynamically allocated memory
+    heap->data = NULL; // Set the pointer to NULL after freeing memory
 }
 
 // Function to get the parent index
@@ -126,7 +137,13 @@ void printHeap(MaxHeap *heap) {
 
 int main() {
     // we initially have an unsorted array
-    int T[max];
+     int *T;
+    T = (int *)malloc(sizeof(int) * max);  // Allocate memory for `max` integers
+    if (T == NULL) {
+    printf("Memory allocation failed\n");
+    return 1;  // Or handle the error as needed
+    }
+
     MaxHeap heap;
     initMaxHeap(&heap);
 
@@ -156,7 +173,7 @@ int main() {
     setvbuf(stdout, NULL, _IOFBF, 1024 * 1024);  // Set larger buffer size because of huge heaps not printing to output.txt
 
 
-    if (freopen("output.txt", "w", stdout) == NULL) {
+    if (freopen("output.txt", "a", stdout) == NULL) {
         perror("Error opening output.txt");
         return 1;
     } // to put all my results into a file
@@ -169,12 +186,12 @@ int main() {
         insert(&heap, T[i]);
     }
     clock_t end = clock();
-    printf("Max Heap elements before Sorting Method nLog(n):\n ");
-    printHeap(&heap);
+    // printf("Max Heap elements before Sorting Method nLog(n):\n ");
+    // printHeap(&heap);
     double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
-    printf("Execution time for nlog(n) method of construction: %f seconds\n", time_taken);
+    printf("Execution time for nlog(n) method of construction of %d elements in heap: %f seconds\n",max, time_taken);
 
-    printf("*********************\n\n\n\n\n\n\n");  
+    // printf("*********************\n\n\n\n\n\n\n");  
 
 
     // method 2 : O(n)
@@ -185,17 +202,17 @@ int main() {
         heap2.data[i] = T[i]; // Assign the elements of T to the heap's data
     }
     clock_t start2 = clock();
-    for (int i = max- 1; i >= 0; i--) {
+    for (int i = (max/2)- 1; i >= 0; i--) {
         heapify(&heap2, max,i);
     }
     clock_t end2 = clock();
     
-    printf("Max Heap elements before Sorting Method O(n): \n");
-    printHeap(&heap2);
+    // printf("Max Heap elements before Sorting Method O(n): \n");
+    // printHeap(&heap2);
     double time_taken2 = ((double)(end2 - start2)) / CLOCKS_PER_SEC;
-    printf("Execution time for O(n) method of construction: %f seconds\n", time_taken2);
+    printf("Execution time for O(n) method of construction of %d elements in heap: %f seconds\n",max, time_taken2);
     
-    printf("*********************\n\n\n\n\n\n\n");
+    // printf("*********************\n\n\n\n\n\n\n");
 
     // deleting all elements successively starting from root (MIN)
     // and inserting into the free space of the array to have a final sorted array
@@ -208,8 +225,8 @@ int main() {
       i--;
     }
     heap.size = max;
-    printf("Max Heap elements After Sorting Ascendently the heap constructed nlog(n):\n ");
-    printHeap(&heap);
+    // printf("Max Heap elements After Sorting Ascendently the heap constructed nlog(n):\n ");
+    // printHeap(&heap);
 
     i = max-1;
     while(i >= 0){
@@ -218,18 +235,22 @@ int main() {
       i--;
     }
 
-    printf("*********************\n\n\n\n\n\n\n");
+    // printf("*********************\n\n\n\n\n\n\n");
 
     heap2.size = max;
-    printf("Max Heap elements After Sorting Ascendently the heap constructed O(n): \n");
-    printHeap(&heap2);
+    // printf("Max Heap elements After Sorting Ascendently the heap constructed O(n): \n");
+    // printHeap(&heap2);
 
     fclose(stdout);
 
+    freeMaxHeap(&heap);
+    freeMaxHeap(&heap2);
 
 
 
     return 0;
 }
+
+
 
 
