@@ -91,21 +91,17 @@ void afficherParcoursInfixe(Node* racine) {
 int main() {
     Node* racine = NULL;
     int choix, element,nbr;
-    // printf("Donnez nomber des elements de l'arbre :");
-    // scanf("%d",&nbr);
-    // printf("\n");
-    // for(int i=1;i<=nbr;i++){
-    // 	printf("Nomber %d d'arbre :",i);
-    // 	scanf("%d",&element);
-    //      racine=ajoute(racine,element);
-	// }
-    clock_t start = clock();
-    for(int i=0;i<100000000;i++){
-        racine=ajoute(racine,rand());
-    }
-    clock_t end = clock();
-                double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
-     printf("%f nanoSec", time_taken);
+    double time_taken;
+    clock_t start ,end;
+    printf("Donnez nomber des elements de l'arbre :");
+    scanf("%d",&nbr);
+    printf("\n");
+    for(int i=1;i<=nbr;i++){
+    	printf("Nomber %d d'arbre :",i);
+    	scanf("%d",&element);
+         racine=ajoute(racine,element);
+	}
+   
      printf("Afficher arbre apres insertion :");
      afficherParcoursInfixe(racine);
     while (1) {
