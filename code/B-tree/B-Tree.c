@@ -3,416 +3,421 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define MAX 3
-#define MIN 1
-
-struct btreeNode
+// noeud B-Tree
+typedef struct NoeudBtree
 {
-    int val[MAX + 1], count;
-    struct btreeNode *link[MAX + 1];
-};
+    int *cles;
+    int t;
+    struct NoeudBtree **C;
+    int n;
+    bool feuille;
+} NoeudBtree;
 
-struct btreeNode *root;
-
-/* creating new node */
-struct btreeNode *createNode(int val, struct btreeNode *child)
+// Btree
+typedef struct BTree
 {
-    struct btreeNode *newNode = (struct btreeNode *)malloc(sizeof(struct btreeNode));
-    newNode->val[1] = val;
-    newNode->count = 1;
-    newNode->link[0] = root;
-    newNode->link[1] = child;
-    return newNode;
+    NoeudBtree *root;
+    int t; // degree minimum
+} BTree;
+
+// Déclarations des fonctions utilisées dans le code avant leur définition
+void Deviser(NoeudBtree *noeud, int i, NoeudBtree *y);
+void SupprimerValFeuille(NoeudBtree *noeud, int idx);
+void SupprimerValNoeud(NoeudBtree *noeud, int idx);
+void Remplir(NoeudBtree *noeud, int idx);
+void emprunterPrec(NoeudBtree *noeud, int idx);
+void emprunterSuiv(NoeudBtree *noeud, int idx);
+void Fusionner(NoeudBtree *noeud, int idx);
+int Predecesseur(NoeudBtree *noeud, int idx);
+int Successeur(NoeudBtree *noeud, int idx);
+
+// Constructeur d'un noeud de B-tree
+NoeudBtree *CreerNoeudArbre(int t, bool feuille)
+{
+    NoeudBtree *nvNoeud = (NoeudBtree *)malloc(sizeof(NoeudBtree));
+    nvNoeud->t = t;
+    nvNoeud->feuille = feuille;
+    nvNoeud->cles = (int *)malloc((2 * t - 1) * sizeof(int));
+    nvNoeud->C = (NoeudBtree **)malloc(2 * t * sizeof(NoeudBtree *));
+    nvNoeud->n = 0;
+    return nvNoeud;
 }
 
-/* Places the value in appropriate position */
-void addValToNode(int val, int pos, struct btreeNode *node, struct btreeNode *child)
+// Constructeur du B-tree
+BTree *createBTree(int t)
 {
-    int j = node->count;
-    while (j > pos)
-    {
-        node->val[j + 1] = node->val[j];
-        node->link[j + 1] = node->link[j];
-        j--;
-    }
-    node->val[j + 1] = val;
-    node->link[j + 1] = child;
-    node->count++;
+    BTree *newTree = (BTree *)malloc(sizeof(BTree));
+    newTree->root = NULL;
+    newTree->t = t;
+    return newTree;
 }
 
-/* split the node */
-void splitNode(int val, int *pval, int pos, struct btreeNode *node, struct btreeNode *child, struct btreeNode **newNode)
+// A function to AfficherArbre all noeuds in a subtree rooted with this noeud
+void AfficherArbre(NoeudBtree *noeud)
 {
-    int median, j;
+    if (noeud == NULL)
+        return;
 
-    if (pos > MIN)
-        median = MIN + 1;
-    else
-        median = MIN;
+    int i;
+    for (i = 0; i < noeud->n; i++)
+    {
+        if (!noeud->feuille)
+            AfficherArbre(noeud->C[i]);
+        printf(" %d", noeud->cles[i]);
+    }
 
-    *newNode = (struct btreeNode *)malloc(sizeof(struct btreeNode));
-    j = median + 1;
-    while (j <= MAX)
-    {
-        (*newNode)->val[j - median] = node->val[j];
-        (*newNode)->link[j - median] = node->link[j];
-        j++;
-    }
-    node->count = median;
-    (*newNode)->count = MAX - median;
-
-    if (pos <= MIN)
-    {
-        addValToNode(val, pos, node, child);
-    }
-    else
-    {
-        addValToNode(val, pos - median, *newNode, child);
-    }
-    *pval = node->val[node->count];
-    (*newNode)->link[0] = node->link[node->count];
-    node->count--;
+    if (!noeud->feuille)
+        AfficherArbre(noeud->C[i]);
 }
 
-/* sets the value val in the node */
-int setValueInNode(int val, int *pval, struct btreeNode *node, struct btreeNode **child)
+// une fonction qui permet de faire une recherche sur la valeur et retrouner le noeud courant
+NoeudBtree *chercherVal(NoeudBtree *noeud, int k)
 {
-    int pos;
-    if (!node)
-    {
-        *pval = val;
-        *child = NULL;
-        return 1;
-    }
+    if (noeud == NULL)
+        return NULL;
 
-    if (val < node->val[1])
-    {
-        pos = 0;
-    }
-    else
-    {
-        for (pos = node->count;
-             (val < node->val[pos] && pos > 1); pos--)
-            ;
-        if (val == node->val[pos])
-        {
-            printf("Les duplications des valeurs ne sont pas autorisé\n");
-            return 0;
-        }
-    }
-    if (setValueInNode(val, pval, node->link[pos], child))
-    {
-        if (node->count < MAX)
-        {
-            addValToNode(*pval, pos, node, *child);
-        }
-        else
-        {
-            splitNode(*pval, pval, pos, node, *child, child);
-            return 1;
-        }
-    }
-    return 0;
-}
-
-/* insert val in B-Tree */
-void insertion(int val)
-{
-    int flag, i;
-    struct btreeNode *child;
-
-    flag = setValueInNode(val, &i, root, &child);
-    if (flag)
-        root = createNode(i, child);
-}
-
-/* copy successor for the value to be deleted */
-void copySuccessor(struct btreeNode *myNode, int pos)
-{
-    struct btreeNode *dummy;
-    dummy = myNode->link[pos];
-
-    for (; dummy->link[0] != NULL;)
-        dummy = dummy->link[0];
-    myNode->val[pos] = dummy->val[1];
-}
-
-/* removes the value from the given node and rearrange values */
-void removeVal(struct btreeNode *myNode, int pos)
-{
-    int i = pos + 1;
-    while (i <= myNode->count)
-    {
-        myNode->val[i - 1] = myNode->val[i];
-        myNode->link[i - 1] = myNode->link[i];
+    int i = 0;
+    while (i < noeud->n && k > noeud->cles[i])
         i++;
-    }
-    myNode->count--;
+
+    if (noeud->cles[i] == k)
+        return noeud;
+
+    if (noeud->feuille)
+        return NULL;
+
+    return chercherVal(noeud->C[i], k);
 }
 
-/* shifts value from parent to right child */
-void doRightShift(struct btreeNode *myNode, int pos)
+// cette fonction permet de verifier si la valeur entrer exist dans l'arbre
+void rechercher(NoeudBtree *noeud, int k)
 {
-    struct btreeNode *x = myNode->link[pos];
-    int j = x->count;
-
-    while (j > 0)
+    NoeudBtree *b = chercherVal(noeud, k);
+    if (b == NULL)
     {
-        x->val[j + 1] = x->val[j];
-        x->link[j + 1] = x->link[j];
-    }
-    x->val[1] = myNode->val[pos];
-    x->link[1] = x->link[0];
-    x->count++;
-
-    x = myNode->link[pos - 1];
-    myNode->val[pos] = x->val[x->count];
-    myNode->link[pos] = x->link[x->count];
-    x->count--;
-}
-
-/* shifts value from parent to left child */
-void doLeftShift(struct btreeNode *myNode, int pos)
-{
-    int j = 1;
-    struct btreeNode *x = myNode->link[pos - 1];
-
-    x->count++;
-    x->val[x->count] = myNode->val[pos];
-    x->link[x->count] = myNode->link[pos]->link[0];
-
-    x = myNode->link[pos];
-    myNode->val[pos] = x->val[1];
-    x->link[0] = x->link[1];
-    x->count--;
-
-    while (j <= x->count)
-    {
-        x->val[j] = x->val[j + 1];
-        x->link[j] = x->link[j + 1];
-        j++;
-    }
-}
-
-/* merge nodes */
-void mergeNodes(struct btreeNode *myNode, int pos)
-{
-    int j = 1;
-    struct btreeNode *x1 = myNode->link[pos], *x2 = myNode->link[pos - 1];
-
-    x2->count++;
-    x2->val[x2->count] = myNode->val[pos];
-    x2->link[x2->count] = myNode->link[0];
-
-    while (j <= x1->count)
-    {
-        x2->count++;
-        x2->val[x2->count] = x1->val[j];
-        x2->link[x2->count] = x1->link[j];
-        j++;
-    }
-
-    j = pos;
-    while (j < myNode->count)
-    {
-        myNode->val[j] = myNode->val[j + 1];
-        myNode->link[j] = myNode->link[j + 1];
-        j++;
-    }
-    myNode->count--;
-    free(x1);
-}
-
-/* adjusts the given node */
-void adjustNode(struct btreeNode *myNode, int pos)
-{
-    if (!pos)
-    {
-        if (myNode->link[1]->count > MIN)
-        {
-            doLeftShift(myNode, 1);
-        }
-        else
-        {
-            mergeNodes(myNode, 1);
-        }
-    }
-    else
-    {
-        if (myNode->count != pos)
-        {
-            if (myNode->link[pos - 1]->count > MIN)
-            {
-                doRightShift(myNode, pos);
-            }
-            else
-            {
-                if (myNode->link[pos + 1]->count > MIN)
-                {
-                    doLeftShift(myNode, pos + 1);
-                }
-                else
-                {
-                    mergeNodes(myNode, pos);
-                }
-            }
-        }
-        else
-        {
-            if (myNode->link[pos - 1]->count > MIN)
-                doRightShift(myNode, pos);
-            else
-                mergeNodes(myNode, pos);
-        }
-    }
-}
-
-/* delete val from the node */
-int delValFromNode(int val, struct btreeNode *myNode)
-{
-    int pos, flag = 0;
-    if (myNode)
-    {
-        if (val < myNode->val[1])
-        {
-            pos = 0;
-            flag = 0;
-        }
-        else
-        {
-            for (pos = myNode->count;
-                 (val < myNode->val[pos] && pos > 1); pos--)
-                ;
-            if (val == myNode->val[pos])
-            {
-                flag = 1;
-            }
-            else
-            {
-                flag = 0;
-            }
-        }
-        if (flag)
-        {
-            if (myNode->link[pos - 1])
-            {
-                copySuccessor(myNode, pos);
-                flag = delValFromNode(myNode->val[pos], myNode->link[pos]);
-                if (flag == 0)
-                {
-                    printf("Given data is not present in B-Tree\n");
-                }
-            }
-            else
-            {
-                removeVal(myNode, pos);
-            }
-        }
-        else
-        {
-            flag = delValFromNode(val, myNode->link[pos]);
-        }
-        if (myNode->link[pos])
-        {
-            if (myNode->link[pos]->count < MIN)
-                adjustNode(myNode, pos);
-        }
-    }
-    return flag;
-}
-
-/* delete val from B-tree */
-void deletion(int val, struct btreeNode *myNode)
-{
-    struct btreeNode *tmp;
-    if (!delValFromNode(val, myNode))
-    {
-        printf("La valeur entrée n'existe pas dans l'arbre\n");
+        printf("\nLa valeur %d n'existe pas \n", k);
         return;
     }
-    else
-    {
-        if (myNode->count == 0)
-        {
-            tmp = myNode;
-            myNode = myNode->link[0];
-            free(tmp);
-        }
-    }
-    root = myNode;
+    printf("\nLa valeur %d existe\n", k);
+    return;
 }
 
-/* search val in B-Tree */
-void searching(int val, int *pos, struct btreeNode *myNode)
+// cette fonction retourne l'index de la premiere clé qui est superieur ou egale a k
+int TrouverCle(NoeudBtree *noeud, int k)
 {
-    if (!myNode)
-    {
-        printf("La valeur entrée elle n'est pas presente dans l'arbre\n");
-        return;
-    }
+    int idx = 0;
+    while (idx < noeud->n && noeud->cles[idx] < k)
+        ++idx;
+    return idx;
+}
 
-    if (val < myNode->val[1])
+// cette fonction sert a inserer une valeur dans un noeud qui n'as pas atteint ca capacité maximale
+void insererNonRempli(NoeudBtree *noeud, int k)
+{
+    int i = noeud->n - 1;
+
+    if (noeud->feuille)
     {
-        *pos = 0;
+        while (i >= 0 && noeud->cles[i] > k)
+        {
+            noeud->cles[i + 1] = noeud->cles[i];
+            i--;
+        }
+        noeud->cles[i + 1] = k;
+        noeud->n = noeud->n + 1;
     }
     else
     {
-        for (*pos = myNode->count;
-             (val < myNode->val[*pos] && *pos > 1); (*pos)--)
-            ;
-        if (val == myNode->val[*pos])
+        while (i >= 0 && noeud->cles[i] > k)
+            i--;
+
+        if (noeud->C[i + 1]->n == 2 * noeud->t - 1)
         {
-            printf("La valeur entrée est trouvé avec succées dans l'arbre\n");
+            Deviser(noeud, i + 1, noeud->C[i + 1]);
+            if (noeud->cles[i + 1] < k)
+                i++;
+        }
+        insererNonRempli(noeud->C[i + 1], k);
+    }
+}
+
+// La fonction qui permet de faire une devision si le noeud a atteint ca capacité maximale
+void Deviser(NoeudBtree *noeud, int i, NoeudBtree *y)
+{
+    NoeudBtree *z = CreerNoeudArbre(y->t, y->feuille);
+    z->n = noeud->t - 1;
+
+    for (int j = 0; j < noeud->t - 1; j++)
+        z->cles[j] = y->cles[j + noeud->t];
+
+    if (!y->feuille)
+    {
+        for (int j = 0; j < noeud->t; j++)
+            z->C[j] = y->C[j + noeud->t];
+    }
+
+    y->n = noeud->t - 1;
+
+    for (int j = noeud->n; j >= i + 1; j--)
+        noeud->C[j + 1] = noeud->C[j];
+
+    noeud->C[i + 1] = z;
+
+    for (int j = noeud->n - 1; j >= i; j--)
+        noeud->cles[j + 1] = noeud->cles[j];
+
+    noeud->cles[i] = y->cles[noeud->t - 1];
+
+    noeud->n = noeud->n + 1;
+}
+
+// la fonction qui permt de supprimer la clé de l'arbre et gérer les propriétés
+void supprimerCle(NoeudBtree *noeud, int k)
+{
+    int idx = TrouverCle(noeud, k);
+
+    if (idx < noeud->n && noeud->cles[idx] == k)
+    {
+        if (noeud->feuille)
+            SupprimerValFeuille(noeud, idx);
+        else
+            SupprimerValNoeud(noeud, idx);
+    }
+    else
+    {
+        if (noeud->feuille)
+        {
+            printf("la cle %d n'existe pas dans l'arbre\n", k);
             return;
         }
+
+        bool flag = (idx == noeud->n) ? true : false;
+
+        if (noeud->C[idx]->n < noeud->t)
+            Remplir(noeud, idx);
+
+        if (flag && idx > noeud->n)
+            supprimerCle(noeud->C[idx - 1], k);
+        else
+            supprimerCle(noeud->C[idx], k);
     }
-    searching(val, pos, myNode->link[*pos]);
+    return;
 }
 
-/* B-Tree Traversal */
-void traversal(struct btreeNode *myNode)
+// une fonction qui permt de retirer une valeur a partir d'un noeud feuille
+void SupprimerValFeuille(NoeudBtree *noeud, int idx)
 {
-    int i;
-    if (myNode)
+    for (int i = idx + 1; i < noeud->n; ++i)
+        noeud->cles[i - 1] = noeud->cles[i];
+
+    noeud->n--;
+
+    return;
+}
+
+// fonctio qui permet de retirer une valeur d'un noeud
+void SupprimerValNoeud(NoeudBtree *noeud, int idx)
+{
+    int k = noeud->cles[idx];
+
+    if (noeud->C[idx]->n >= noeud->t)
     {
-        for (i = 0; i < myNode->count; i++)
+        int pred = Predecesseur(noeud, idx);
+        noeud->cles[idx] = pred;
+        supprimerCle(noeud->C[idx], pred);
+    }
+    else if (noeud->C[idx + 1]->n >= noeud->t)
+    {
+        int succ = Successeur(noeud, idx);
+        noeud->cles[idx] = succ;
+        supprimerCle(noeud->C[idx + 1], succ);
+    }
+    else
+    {
+        Fusionner(noeud, idx);
+        supprimerCle(noeud->C[idx], k);
+    }
+    return;
+}
+
+// Fonction qui permet de d'avoir le predecesseur d'une clé
+
+int Predecesseur(NoeudBtree *noeud, int idx)
+{
+    NoeudBtree *cur = noeud->C[idx];
+    while (!cur->feuille)
+        cur = cur->C[cur->n];
+
+    return cur->cles[cur->n - 1];
+}
+
+// Fonction qui permet de d'avoir le successeur d'une clé
+int Successeur(NoeudBtree *noeud, int idx)
+{
+    NoeudBtree *cur = noeud->C[idx + 1];
+    while (!cur->feuille)
+        cur = cur->C[0];
+
+    return cur->cles[0];
+}
+
+// Fonction qui permet de remplir le noeud avec des valeurs
+void Remplir(NoeudBtree *noeud, int idx)
+{
+    if (idx != 0 && noeud->C[idx - 1]->n >= noeud->t)
+        emprunterPrec(noeud, idx);
+    else if (idx != noeud->n && noeud->C[idx + 1]->n >= noeud->t)
+        emprunterSuiv(noeud, idx);
+    else
+    {
+        if (idx != noeud->n)
+            Fusionner(noeud, idx);
+        else
+            Fusionner(noeud, idx - 1);
+    }
+    return;
+}
+
+void emprunterPrec(NoeudBtree *noeud, int idx)
+{
+    NoeudBtree *fils = noeud->C[idx];
+    NoeudBtree *enfants = noeud->C[idx - 1];
+
+    for (int i = fils->n - 1; i >= 0; --i)
+        fils->cles[i + 1] = fils->cles[i];
+
+    if (!fils->feuille)
+    {
+        for (int i = fils->n; i >= 0; --i)
+            fils->C[i + 1] = fils->C[i];
+    }
+
+    fils->cles[0] = noeud->cles[idx - 1];
+
+    if (!fils->feuille)
+        fils->C[0] = enfants->C[enfants->n];
+
+    noeud->cles[idx - 1] = enfants->cles[enfants->n - 1];
+
+    fils->n += 1;
+    enfants->n -= 1;
+
+    return;
+}
+
+void emprunterSuiv(NoeudBtree *noeud, int idx)
+{
+    NoeudBtree *fils = noeud->C[idx];
+    NoeudBtree *enfants = noeud->C[idx + 1];
+
+    fils->cles[(fils->n)] = noeud->cles[idx];
+
+    if (!fils->feuille)
+        fils->C[(fils->n) + 1] = enfants->C[0];
+
+    noeud->cles[idx] = enfants->cles[0];
+
+    for (int i = 1; i < enfants->n; ++i)
+        enfants->cles[i - 1] = enfants->cles[i];
+
+    if (!enfants->feuille)
+    {
+        for (int i = 1; i <= enfants->n; ++i)
+            enfants->C[i - 1] = enfants->C[i];
+    }
+
+    fils->n += 1;
+    enfants->n -= 1;
+
+    return;
+}
+
+// cette fonction permet de faire ls fusions des fils d'index idn t idx+1
+void Fusionner(NoeudBtree *noeud, int idx)
+{
+    NoeudBtree *fils = noeud->C[idx];
+    NoeudBtree *enfants = noeud->C[idx + 1];
+
+    fils->cles[noeud->t - 1] = noeud->cles[idx];
+
+    for (int i = 0; i < enfants->n; ++i)
+        fils->cles[i + noeud->t] = enfants->cles[i];
+
+    if (!fils->feuille)
+    {
+        for (int i = 0; i <= enfants->n; ++i)
+            fils->C[i + noeud->t] = enfants->C[i];
+    }
+
+    for (int i = idx + 1; i < noeud->n; ++i)
+        noeud->cles[i - 1] = noeud->cles[i];
+
+    for (int i = idx + 2; i <= noeud->n; ++i)
+        noeud->C[i - 1] = noeud->C[i];
+
+    fils->n += enfants->n + 1;
+    noeud->n--;
+
+    free(enfants);
+    return;
+}
+
+// La fonction principale d'insertion
+void inserer(BTree *tree, int k)
+{
+    if (tree->root == NULL)
+    {
+        tree->root = CreerNoeudArbre(tree->t, true);
+        tree->root->cles[0] = k;
+        tree->root->n = 1;
+    }
+    else
+    {
+        if (chercherVal(tree->root, k))
         {
-            traversal(myNode->link[i]);
-            printf("%d ", myNode->val[i + 1]);
+            printf("la valeur %d existe deja dans l'arbre B\n", k);
+            return;
         }
-        traversal(myNode->link[i]);
+        if (tree->root->n == 2 * tree->t - 1)
+        {
+            NoeudBtree *s = CreerNoeudArbre(tree->t, false);
+            s->C[0] = tree->root;
+            Deviser(s, 0, tree->root);
+            int i = 0;
+            if (s->cles[0] < k)
+                i++;
+            insererNonRempli(s->C[i], k);
+            tree->root = s;
+        }
+        else
+            insererNonRempli(tree->root, k);
     }
 }
 
-void displayTree(struct btreeNode *myNode, int level)
+// La fonction qui permet de supprimer une valeur a partir de l'arbre
+void SupprimerCleDuNoeud(BTree *tree, int k)
 {
-    if (myNode)
+    if (!tree->root)
     {
-        for (int i = myNode->count; i > 0; i--)
-        {
-            displayTree(myNode->link[i], level + 1);
-            for (int j = 0; j < level; j++)
-            {
-                printf("    "); // Indentation pour chaque niveau
-            }
-            printf("%d\n", myNode->val[i]);
-        }
-        displayTree(myNode->link[0], level + 1);
+        printf("l'arbre est vide\n");
+        return;
     }
+
+    supprimerCle(tree->root, k);
+
+    if (tree->root->n == 0)
+    {
+        NoeudBtree *tmp = tree->root;
+        if (tree->root->feuille)
+            tree->root = NULL;
+        else
+            tree->root = tree->root->C[0];
+
+        free(tmp);
+    }
+    return;
 }
 
-//----------Fonction pour vérifier si un nombre est déjà dans le tableau
-int estUnique(int *tab, int taille, int nombre)
-{
-    for (int i = 0; i < taille; i++)
-    {
-        if (tab[i] == nombre)
-        {
-            return 0; // Non unique
-        }
-    }
-    return 1; // Unique
-}
 /*------Fonction pour generer un fichier qui contient des nombres aleatoires-----*/
 void genererNombresAleatoiresOptimise(char *nomFichier, int taille, int borneMin, int borneMax)
 {
@@ -462,22 +467,24 @@ void genererNombresAleatoiresOptimise(char *nomFichier, int taille, int borneMin
     free(nombres);
 }
 
+// Driver program to test above functions
 int main()
 {
-    root = NULL;
+    clock_t start, end;
+    BTree *arbre = createBTree(3);
+
     const char *nomFichier = "nombres_aleatoires.txt";
     printf("Veuillez entrer la taille (le nombre de chiffre que vous souhaitez avoir dans l'arbre) \n");
     int t;
     scanf("%d", &t);
-    int taille = t;   // Générer 1 million de nombres
-    int borneMin = 1; // Valeur minimale
-    int borneMax = t; // Valeur maximale
+    int taille = t;        // Générer 1 million de nombres
+    int borneMin = 1;      // Valeur minimale
+    int borneMax = 10 * t; // Valeur maximale
     genererNombresAleatoiresOptimise("nombres_aleatoires.txt", taille, borneMin, borneMax);
 
     // Creation de l'arbre
     FILE *fichier = fopen(nomFichier, "r");
     int nombre;
-    clock_t start, end;
     if (!fichier)
     {
         perror("Erreur lors de l'ouverture du fichier");
@@ -486,16 +493,16 @@ int main()
     start = clock();
     while (fscanf(fichier, "%d", &nombre) == 1)
     {
-        insertion(nombre); // Affiche chaque nombre lu
+        inserer(arbre, nombre); // Affiche chaque nombre lu
         // Tu peux ici ajouter du code pour utiliser les nombres selon tes besoins
     }
     end = clock();
     int val;
     int opt = 0;
-
-    printf("\nAffichage du B-Tree d'ordre 4 créer : ");
-    traversal(root);
     printf("\nle temps de creation est %f sec \n", ((double)(end - start)) / CLOCKS_PER_SEC);
+    printf("\nAffichage du B-Tree de degrée 3 ou chaque peut contenir au max 2*3-1 clés et 2*3 fils créer : ");
+    AfficherArbre(arbre->root);
+
     printf("\n**************Debut du programme************\n");
     int n = 0;
     printf("\n**************Menu************\n");
@@ -510,35 +517,35 @@ int main()
             printf("\nVeuillez entrez le nombre que vous souhaiter inserer : ");
             scanf("%d", &val);
             start = clock();
-            insertion(val);
+            inserer(arbre, val);
             end = clock();
-            printf("Le B-tree aprés insertion : ");
-            traversal(root);
+            printf("Opération terminer\n");
             printf("\nle temps d'execution de cette insertion est %f sec \n", ((double)(end - start)) / CLOCKS_PER_SEC);
             break;
         case 2:
             printf("Veuillez entrez le nombre que vous souhaiter supprimer : ");
             scanf("%d", &val);
             start = clock();
-            deletion(val, root);
+            SupprimerCleDuNoeud(arbre, val);
             end = clock();
-            printf("Le B-tree aprés suppression : ");
-            traversal(root);
+            printf("Opération terminer\n");
             printf("\nle temps d'execution de cette suppression est %f sec \n", ((double)(end - start)) / CLOCKS_PER_SEC);
             break;
         case 3:
             printf("Veuillez entrez le nombre que vous souhaiter rechercher : ");
             scanf("%d", &val);
             start = clock();
-            searching(val, &opt, root);
+            rechercher(arbre->root, val);
             end = clock();
+            printf("Opération terminer\n");
             printf("\nle temps d'execution de cette recherche est %f sec \n", ((double)(end - start)) / CLOCKS_PER_SEC);
             break;
         case 4:
             printf("Affichage du B-tree : ");
             start = clock();
-            traversal(root);
+            AfficherArbre(arbre->root);
             end = clock();
+            printf("\nOpération terminer\n");
             printf("\nle temps d'execution de l'affichage est %f sec \n", ((double)(end - start)) / CLOCKS_PER_SEC);
             break;
         default:
