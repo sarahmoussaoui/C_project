@@ -2,12 +2,23 @@ Execution time for 3 variables and 2 clauses: 0.000000 seconds
 Execution time for 6 variables and 3 clauses: 0.000000 seconds
 Execution time for 6 variables and 10 clauses: 0.000000 seconds
 Execution time for 10 variables and 20 clauses: 0.000000 seconds
-Execution time for 20 variables and 30 clauses: 0.001000 seconds
-Execution time for 30 variables and 90 clauses: 14.652000 seconds
-Execution time for 25 variables and 60 clauses: 0.016000 seconds
-Execution time for 30 variables and 60 clauses: 0.436000 seconds
-Execution time for 30 variables and 70 clauses: 0.025000 seconds
-Execution time for 50 variables and 70 clauses: 13.836000 seconds
-Execution time for 20 variables and 100 clauses: 0.110000 seconds
-Execution time for 30 variables and 100 clauses: 4.208000 seconds
-Execution time for 40 variables and 100 clauses: 36.217000 seconds
+Execution time for 20 variables and 30 clauses: 0.000000 seconds
+Execution time for 30 variables and 90 clauses: 0.354000 seconds
+Execution time for 25 variables and 60 clauses: 0.022000 seconds
+Execution time for 30 variables and 60 clauses: 0.000000 seconds
+Execution time for 30 variables and 70 clauses: 0.004000 seconds
+Execution time for 50 variables and 70 clauses: 211.762000 seconds
+Execution time for 20 variables and 100 clauses: 0.170000 seconds
+Execution time for 40 variables and 100 clauses: 63.051000 seconds
+Execution time for 30 variables and 100 clauses: 114.373000 seconds
+Execution time for 50 variables and 100 clauses: 478.636000 seconds
+Execution time for 15 variables and 25 clauses: 0.000000 seconds
+Execution time for 35 variables and 75 clauses: 55.735000 seconds
+Execution time for 60 variables and 70 clauses: 0.189000 seconds
+Execution time for 40 variables and 90 clauses: 71.011000 seconds
+Execution time for 30 variables and 60 clauses: 0.054000 seconds
+Execution time for 40 variables and 60 clauses: 1.672000 seconds
+Execution time for 40 variables and 125 clauses: >2hours
+Execution time for 55 variables and 150 clauses: >2hours
+Execution time for 60 variables and 180 clauses: >2hours
+Execution time for 70 variables and 200 clauses: >2hours

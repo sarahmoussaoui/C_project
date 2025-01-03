@@ -2,32 +2,25 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
-#include <psapi.h>// pour mesurer lutilisation de la memoire
-// Link the psapi.lib library
-#pragma comment(lib, "psapi.lib")
+#include <psapi.h> // pour mesurer l'utilisation de la mémoire
+#pragma comment(lib, "psapi.lib") // Lier la bibliothèque psapi.lib
 
-
-#define MAX_CLAUSES 1000
-#define MAX_VARIABLES 100
-
-// Fonction pour afficher la memoire utilisee
-void afficher_memoire_utilisee(FILE *file,int n, int m) {
+// Fonction pour afficher la mémoire utilisée
+void afficher_memoire_utilisee(FILE *file, int n, int m) {
     PROCESS_MEMORY_COUNTERS memCounters;
     if (GetProcessMemoryInfo(GetCurrentProcess(), &memCounters, sizeof(memCounters))) {
-        fprintf(file,"Mémoire utilisée pour %d variables et %d clauses: %ld bytes\n",n,m, memCounters.WorkingSetSize);
+        fprintf(file, "Mémoire utilisée pour %d variables et %d clauses: %ld bytes\n", n, m, memCounters.WorkingSetSize);
     } else {
-        fprintf(file,"Erreur pour obtenir les informations mémoire\n");
+        fprintf(file, "Erreur pour obtenir les informations mémoire\n");
     }
 }
 
-
-
 // Fonction pour générer des clauses aléatoires
-void generer_clauses(int clauses[][3], int m, int n) {
+void generer_clauses(int **clauses, int m, int n) {
     for (int i = 0; i < m; i++) {
         for (int j = 0; j < 3; j++) {
-            int var = rand() % n + 1; // n+1 pour inclure le n 
-            clauses[i][j] = (rand() % 2 == 0) ? var : -var; // si genere 0 ou 1 alors soit X soit -X
+            int var = rand() % n + 1;
+            clauses[i][j] = (rand() % 2 == 0) ? var : -var;
         }
     }
 }
@@ -45,7 +38,7 @@ int verifier_satisfaction_clause(int clause[], int affectation[]) {
 }
 
 // DFS pour résoudre le problème 3SAT
-int DFS_3SAT(int clauses[][3], int m, int n, int index, int affectation[]) {
+int DFS_3SAT(int **clauses, int m, int n, int index, int affectation[]) {
     if (index == n) {
         for (int i = 0; i < m; i++) {
             if (!verifier_satisfaction_clause(clauses[i], affectation)) {
@@ -64,41 +57,47 @@ int DFS_3SAT(int clauses[][3], int m, int n, int index, int affectation[]) {
 }
 
 // Fonction pour écrire les clauses dans un fichier texte
-void ecrire_clauses_dans_fichier(int clauses[][3], int m, const char *nom_fichier) {
-    FILE *fichier = fopen(nom_fichier, "w"); // Ouvrir le fichier en mode écriture
+void ecrire_clauses_dans_fichier(int **clauses, int m, const char *nom_fichier) {
+    FILE *fichier = fopen(nom_fichier, "w");
     if (fichier == NULL) {
         printf("Erreur : Impossible d'ouvrir le fichier %s\n", nom_fichier);
         exit(EXIT_FAILURE);
     }
 
     for (int i = 0; i < m; i++) {
-        fprintf(fichier, "Clause %d : ", i + 1); // Écrire l'index de la clause
+        fprintf(fichier, "Clause %d : ", i + 1);
         for (int j = 0; j < 3; j++) {
-            fprintf(fichier, "%d ", clauses[i][j]); // Écrire chaque littéral
+            fprintf(fichier, "%d ", clauses[i][j]);
         }
-        fprintf(fichier, "\n"); // Nouvelle ligne après chaque clause
+        fprintf(fichier, "\n");
     }
 
-    fclose(fichier); // Fermer le fichier
-    // printf("Les clauses ont été écrites dans le fichier %s avec succès.\n", nom_fichier);
+    fclose(fichier);
 }
 
 int main() {
-    int n, m; // Variables et clauses
-    int clauses[MAX_CLAUSES][3];
-    int affectation[MAX_VARIABLES];
-    
-    srand(time(NULL)); // pour avoir une séquence aléatoire différente à chaque exécution.
+    int n, m; // Nombre de variables et de clauses
+    int **clauses; // Allocation dynamique des clauses
+    int *affectation; // Allocation dynamique de l'affectation
+   
+    srand(time(NULL));
     printf("Nombre de variables (n) : ");
     scanf("%d", &n);
     printf("Nombre de clauses (m) : ");
     scanf("%d", &m);
 
+    // Allocation dynamique
+    clauses = (int **)malloc(m * sizeof(int *));
+    for (int i = 0; i < m; i++) {
+        clauses[i] = (int *)malloc(3 * sizeof(int));
+    }
+    affectation = (int *)malloc(n * sizeof(int));
+
     // Génération des clauses aléatoires
     generer_clauses(clauses, m, n);
 
     // Écrire les clauses dans un fichier texte
-    ecrire_clauses_dans_fichier(clauses, m, "clauses.txt"); // for debugging purposes
+    ecrire_clauses_dans_fichier(clauses, m, "clauses.txt");
 
     // Mesure du temps d'exécution
     clock_t start = clock();
@@ -110,28 +109,29 @@ int main() {
     if (resultat) {
         printf("Affectation satisfiable!\n");
         for (int i = 0; i < n; i++) {
-                printf("%d ", affectation[i] ? i + 1 : -(i + 1)); // Affichage des variables
+            printf("%d ", affectation[i] ? i + 1 : -(i + 1));
         }
     } else {
         printf("Affectation non satisfiable.\n");
     }
 
     FILE *file = fopen("results.txt", "a");
-    if (file == NULL) {
-        printf("Error opening file for writing.\n");
-        return 1;
-    }
-
     FILE *file2 = fopen("memoire_results.txt", "a");
-    if (file == NULL) {
-        printf("Erreur d'ouverture du fichier.\n");
-        return -1;
+    if (file && file2) {
+        fprintf(file, "Execution time for %d variables and %d clauses: %f seconds\n", n, m, execution_time);
+        afficher_memoire_utilisee(file2, n, m);
+        fclose(file);
+        fclose(file2);
+    } else {
+        printf("Erreur d'ouverture des fichiers de résultats.\n");
     }
 
-    fprintf(file, "Execution time for %d variables and %d clauses: %f seconds\n", n, m, execution_time);
-    afficher_memoire_utilisee(file2,n,m);
-    fclose(file);
-    fclose(file2);
-    
+    // Libération de la mémoire
+    for (int i = 0; i < m; i++) {
+        free(clauses[i]);
+    }
+    free(clauses);
+    free(affectation);
+
     return 0;
 }
