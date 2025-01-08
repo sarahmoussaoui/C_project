@@ -1,0 +1,18 @@
+Execution time for 1 variables and 1 clauses: 0.000000 seconds
+Execution time for 1 variables and 1 clauses: 0.000000 seconds
+Execution time for 3 variables and 2 clauses: 0.000000 seconds
+Execution time for 3 variables and 3 clauses: 0.000000 seconds
+Execution time for 4 variables and 4 clauses: 0.000000 seconds
+Execution time for 4 variables and 3 clauses: 0.000000 seconds
+Execution time for 5 variables and 5 clauses: 0.001000 seconds
+Execution time for 5 variables and 6 clauses: 0.002000 seconds
+Execution time for 3 variables and 1 clauses: 0.000000 seconds
+Execution time for 6 variables and 8 clauses: 0.003000 seconds
+Execution time for 7 variables and 10 clauses: 0.013000 seconds
+Execution time for 8 variables and 12 clauses: 0.002000 seconds
+Execution time for 9 variables and 15 clauses: 0.002000 seconds
+Execution time for 10 variables and 20 clauses: 0.003000 seconds
+Execution time for 12 variables and 25 clauses: 0.002000 seconds
+Execution time for 15 variables and 30 clauses: 0.003000 seconds
+Execution time for 20 variables and 40 clauses:
+Execution time for 25 variables and 50 clauses:
