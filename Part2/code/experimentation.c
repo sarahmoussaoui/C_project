@@ -2,18 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
-#include <psapi.h> // pour mesurer l'utilisation de la mémoire
-#pragma comment(lib, "psapi.lib") // Lier la bibliothèque psapi.lib
-
-// Fonction pour afficher la mémoire utilisée
-void afficher_memoire_utilisee(FILE *file, int n, int m) {
-    PROCESS_MEMORY_COUNTERS memCounters;
-    if (GetProcessMemoryInfo(GetCurrentProcess(), &memCounters, sizeof(memCounters))) {
-        fprintf(file, "Mémoire utilisée pour %d variables et %d clauses: %ld bytes\n", n, m, memCounters.WorkingSetSize);
-    } else {
-        fprintf(file, "Erreur pour obtenir les informations mémoire\n");
-    }
-}
 
 // Fonction pour générer des clauses aléatoires
 void generer_clauses(int **clauses, int m, int n) {
@@ -116,12 +104,9 @@ int main() {
     }
 
     FILE *file = fopen("results.txt", "a");
-    FILE *file2 = fopen("memoire_results.txt", "a");
-    if (file && file2) {
+    if (file) {
         fprintf(file, "Execution time for %d variables and %d clauses: %f seconds\n", n, m, execution_time);
-        afficher_memoire_utilisee(file2, n, m);
         fclose(file);
-        fclose(file2);
     } else {
         printf("Erreur d'ouverture des fichiers de résultats.\n");
     }
